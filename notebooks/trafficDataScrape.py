@@ -8,27 +8,46 @@ from bs4 import BeautifulSoup # Used to parse HTML
 highwayRankingWebpage = requests.get("https://reason.org/policy-study/24th-annual-highway-report/24th-annual-highway-report-executive-summary/")
 extractMainWebPage = BeautifulSoup(highwayRankingWebpage.content, 'html.parser')
 
-allStateOverallRanks = extractMainWebPage.find_all('table', class_='tablesorter')[0]
-allStateOverallRanksCount = list(extractMainWebPage.find_all('table', class_='tablesorter'))[0].find_all('a', href=True)
+allStateCategories = extractMainWebPage.find_all('span', class_='highway-report-state-ranks--category-title')
 
-print(len(allStateOverallRanksCount))
-list(allStateOverallRanks.find_all('a', href=True))[0]['href']
-eachState = 0
-while eachState < len(allStateOverallRanksCount):
-    print("State being checked: " + list(allStateOverallRanks.find_all('a', href=True))[eachState].get_text())
-    stateWebpage = "https://reason.org" + list(allStateOverallRanks.find_all('a', href=True))[eachState]['href']
-    print("Weblink is this: " + stateWebpage)
-    stateSpecificWebpage = requests.get(stateWebpage)
-    extractStateWebpage = BeautifulSoup(stateSpecificWebpage.content, 'html.parser')
-    stateStatsValue = extractStateWebpage.find_all('span', class_='highway-report-state-ranks--category-value')    
-    stateStatsTitle = extractStateWebpage.find_all('span', class_='highway-report-state-ranks--category-title')
-    print("Length of statsVal should be same as Stats Title")
-    if (len(stateStatsTitle) == len(stateStatsValue)):
-        print("Counts line up")
-    print(stateStatsValue[0].get_text())
-    print(stateStatsTitle[0].get_text())
+allCategoryLinks = list(allStateCategories)
+# list(allStateCategories)[1].find_all('a', href=True)
+eachLink = 0
+while eachLink < len(allCategoryLinks):
+    categoryWebpage = "https://reason.org" + str(list(allStateCategories)[eachLink].find_all('a', href=True)[0]['href'])
+    print("Weblink is this: " + categoryWebpage)
+    # print(categoryWebpage)
+    categorySpecificWebpage = requests.get(categoryWebpage)
+    extractStateWebpage = BeautifulSoup(categorySpecificWebpage.content, 'html.parser')
+    tableRanking = extractStateWebpage.find_all('table', class_='tablesorter')
+    outputData = []
+    if (len(list(tableRanking)[0].find_all('td')) != 153):
+        print("Skipping this webpage. Doesn't have the data we need.")
+        eachLink += 1
+        continue
+    allRankingsSorted = list(tableRanking)[0].find_all('td')
+    eachStateData = 0
+    while (eachStateData < len(allRankingsSorted)):
+        print(list(allRankingsSorted)[eachStateData].get_text())
+        eachStateData += 1
+    eachLink += 1
 
-    eachState += 1
+# print(len(allStateOverallRanksCount))
+# list(allStateOverallRanks.find_all('a', href=True))[0]['href']
+# eachState = 0
+# while eachState < len(allStateOverallRanksCount):
+#     print("State being checked: " + list(allStateOverallRanks.find_all('a', href=True))[eachState].get_text())
+#     stateWebpage = "https://reason.org" + list(allStateOverallRanks.find_all('a', href=True))[eachState]['href']
+    # print("Weblink is this: " + stateWebpage)
+    # stateSpecificWebpage = requests.get(stateWebpage)
+    # extractStateWebpage = BeautifulSoup(stateSpecificWebpage.content, 'html.parser')
+#     stateStatsValue = extractStateWebpage.find_all('span', class_='highway-report-state-ranks--category-value')    
+#     stateStatsTitle = extractStateWebpage.find_all('span', class_='highway-report-state-ranks--category-title')
+
+#     print(stateStatsValue[0].get_text())
+#     print(stateStatsTitle[0].get_text())
+
+#     eachState += 1
     
 
 
