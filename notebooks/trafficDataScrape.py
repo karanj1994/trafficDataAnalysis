@@ -20,11 +20,13 @@ while eachState < len(allStateOverallRanksCount):
     print("Weblink is this: " + stateWebpage)
     stateSpecificWebpage = requests.get(stateWebpage)
     extractStateWebpage = BeautifulSoup(stateSpecificWebpage.content, 'html.parser')
-    # print(list(extractStateWebpage.contents))
     stateStatsValue = extractStateWebpage.find_all('span', class_='highway-report-state-ranks--category-value')    
     stateStatsTitle = extractStateWebpage.find_all('span', class_='highway-report-state-ranks--category-title')
-    print(stateStats[0])#.find_all('span', class_='highway-report-state-ranks--category-title')))#[0].get_text()
-    print(stateStats[1])
+    print("Length of statsVal should be same as Stats Title")
+    if (len(stateStatsTitle) == len(stateStatsValue)):
+        print("Counts line up")
+    print(stateStatsValue[0].get_text())
+    print(stateStatsTitle[0].get_text())
 
     eachState += 1
     
