@@ -4,6 +4,7 @@
 
 import requests # Gets the HTML from a webpage
 from bs4 import BeautifulSoup # Used to parse HTML
+import csv
 
 highwayRankingWebpage = requests.get("https://reason.org/policy-study/24th-annual-highway-report/24th-annual-highway-report-executive-summary/")
 extractMainWebPage = BeautifulSoup(highwayRankingWebpage.content, 'html.parser')
@@ -25,11 +26,22 @@ while eachLink < len(allCategoryLinks):
         print("Skipping this webpage. Doesn't have the data we need.")
         eachLink += 1
         continue
+    extractHeader = list(extractStateWebpage.find_all('h5', class_='table-title'))[0].get_text()
+    # print(extractHeader)
     allRankingsSorted = list(tableRanking)[0].find_all('td')
     eachStateData = 0
     while (eachStateData < len(allRankingsSorted)):
-        print(list(allRankingsSorted)[eachStateData].get_text())
+        outputData.append(list(allRankingsSorted)[eachStateData].get_text())
         eachStateData += 1
+    new_list=[]
+    i=0
+    while i<len(outputData):
+        new_list.append(outputData[i:i+3])
+        i+=3
+    print(new_list)
+    with open("data/" + extractHeader + ".csv", "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(new_list)
     eachLink += 1
 
 # print(len(allStateOverallRanksCount))
