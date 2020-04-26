@@ -17,10 +17,15 @@ eachState = 0
 while eachState < len(allStateOverallRanksCount):
     print("State being checked: " + list(allStateOverallRanks.find_all('a', href=True))[eachState].get_text())
     stateWebpage = "https://reason.org" + list(allStateOverallRanks.find_all('a', href=True))[eachState]['href']
+    print("Weblink is this: " + stateWebpage)
     stateSpecificWebpage = requests.get(stateWebpage)
     extractStateWebpage = BeautifulSoup(stateSpecificWebpage.content, 'html.parser')
-    print(list(extractStateWebpage.contents))
-    #print("test")
+    # print(list(extractStateWebpage.contents))
+    stateStatsValue = extractStateWebpage.find_all('span', class_='highway-report-state-ranks--category-value')    
+    stateStatsTitle = extractStateWebpage.find_all('span', class_='highway-report-state-ranks--category-title')
+    print(stateStats[0])#.find_all('span', class_='highway-report-state-ranks--category-title')))#[0].get_text()
+    print(stateStats[1])
+
     eachState += 1
     
 
